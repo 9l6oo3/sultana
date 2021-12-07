@@ -1,0 +1,89 @@
+<?php
+include 'inc/header.php';
+include 'connection.php';
+Session::CheckSession();
+
+$logMsg = Session::get('logMsg');
+if (isset($logMsg)) {
+  echo $logMsg;
+}
+$msg = Session::get('msg');
+if (isset($msg)) {
+  echo $msg;
+}
+Session::set("msg", NULL);
+Session::set("logMsg", NULL);
+?>
+
+<h3>
+	عرض المدارس الحالية<a href="newSch.php" class="btn btn-sm btn-success pull-right"> اضافة مدرسة</a>
+	 <a href="schools.php" class="btn btn-sm btn-success pull-right"> عودة </a>
+	 <a href="index.php?id=<?php  ?>" class="btn btn-primary"> عودة للقائمة الرئيسية</a>
+	<a href="searchSch.php" class="btn btn-sm btn-default">
+			<i class="fa fa-search"></i> Search
+		</a>
+</h3>
+
+<?php
+	$query = "SELECT * from tbl_schoolstype";
+	$result = mysqli_query($connection,$query);
+	$num = mysqli_num_rows($result);
+	if($num == 0) {
+		echo '<div class="alert alert-danger" role="alert" style="margin:10px auto;text-align:center">';
+		echo "<p>عذرًا .. لا توجد معلومات حاليًا</p>";
+		echo '</div>';
+	}
+	else
+	{
+		
+?>
+
+<table border="0" align="center" id="example" cellpadding="1" class="table table-bordered" style="background-color:#FFF">
+ <thead>
+
+  <tr class="active">
+  	<th width="72" nowrap="nowrap">No.</th>
+	 <th nowrap="nowrap" >تصنيف المدرسة</th>
+    <th nowrap="nowrap">اسم المدرسة</th>
+     <th nowrap="nowrap">الولاية</th>
+
+  </tr>
+ </thead>
+ 
+    <?php
+		$i = 1;
+		while($row = mysqli_fetch_array($result))
+		{
+	?>
+	 <?php
+$school_id = $row['school_id']; 
+	$query1 = "SELECT *from tbl_schools WHERE school_id={$school_id} ";
+	$result1 = mysqli_query($connection,$query1);
+	$row1 = mysqli_fetch_array($result1);
+	echo $row1['school_name'];
+		
+?>
+	
+  <tbody>
+    <tr>
+      <td nowrap="nowrap"><?php echo $i++; ?></td>
+	
+	  <td nowrap="nowrap"><?php echo $row1['school_name']; ?></td>
+	 
+	<td nowrap="nowrap"><?php echo $row['schoolname']; ?></td>
+	<td nowrap="nowrap"><?php echo $row['address']; ?></td>
+	
+  </tr>
+  </tbody>
+  <?php } ?>
+</table>
+
+<?php
+		
+	}
+  ?>
+
+  <?php
+  include 'inc/footer.php';
+
+  ?>
